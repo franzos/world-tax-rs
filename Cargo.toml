@@ -2,6 +2,12 @@
 name = "world-tax"
 version = "0.1.1"
 edition = "2021"
+license = "MIT"
+description = "A simple world tax calculator"
+homepage = "https://github.com/franzos/world-tax-rs"
+repository = "https://github.com/franzos/world-tax-rs"
+readme = "README.md"
+authors = ["Franz Geffke <m@f-a.nz>"]
 
 [dependencies]
 serde = { version = "1.0.216", features = ["derive"] }
