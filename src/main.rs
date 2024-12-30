@@ -1,5 +1,5 @@
-use tax_rs::types::{TaxScenario, Region, TransactionType, TaxCalculationType, VatRate};
-use tax_rs::provider::TaxDatabase;
+use world_tax::types::{TaxScenario, Region, TransactionType, TaxCalculationType, VatRate};
+use world_tax::provider::TaxDatabase;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let rates_json_data = include_str!("../vat_rates.json");
@@ -8,8 +8,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // EU B2B scenario
     let eu_b2b = TaxScenario {
-        source_region: Region::new("DE".to_string(), None),
-        destination_region: Region::new("FR".to_string(), None),
+        source_region: Region::new("US".to_string(), None).expect("Country code to be valid"),
+        destination_region: Region::new("DE".to_string(), None).expect("Country code to be valid"),
         transaction_type: TransactionType::B2B,
         calculation_type: TaxCalculationType::Destination,
         trade_agreement_override: None,
@@ -21,8 +21,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Canadian domestic scenario
     let ca_domestic = TaxScenario {
-        source_region: Region::new("CA".to_string(), Some("BC".to_string())),
-        destination_region: Region::new("CA".to_string(), Some("BC".to_string())),
+        source_region: Region::new("CA".to_string(), Some("BC".to_string())).expect("Country and region code is invalid"),
+        destination_region: Region::new("CA".to_string(), Some("BC".to_string())).expect("Country and region code is invalid"),
         transaction_type: TransactionType::B2C,
         calculation_type: TaxCalculationType::Destination,
         trade_agreement_override: None,
