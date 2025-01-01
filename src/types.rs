@@ -53,8 +53,9 @@ pub enum VatRate {
     Reduced,     
     ReducedAlt,  
     SuperReduced,
-    Zero,        
-    Exempt       
+    Zero,
+    Exempt,
+    ReverseCharge   
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -87,7 +88,7 @@ impl TradeAgreement {
 #[derive(Debug, Clone)]
 pub enum TradeAgreementOverride {
     UseAgreement(String),  // Agreement ID like "EU", "USMCA"
-    NoAgreement,          // Force no trade agreement
+    NoAgreement,           // Force no trade agreement
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

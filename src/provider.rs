@@ -88,6 +88,7 @@ impl TaxDatabase {
                         VatRate::SuperReduced => country_data.super_reduced_rate,
                         VatRate::Zero => Some(0.0),
                         VatRate::Exempt => Some(0.0),
+                        VatRate::ReverseCharge => Some(0.0),
                     } {
                         rates.push(TaxRate {
                             rate,

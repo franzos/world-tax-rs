@@ -25,20 +25,69 @@ let rates_json_data = include_str!("../vat_rates.json");
 let agreements_json_data = include_str!("../trade_agreements.json");
 let db = TaxDatabase::from_json(rates_json_data, agreements_json_data)?;
 
-// EU B2B scenario
-let eu_b2b = TaxScenario {
-    source_region: Region::new("US".to_string(), None).expect("Country code to be valid"),
-    destination_region: Region::new("DE".to_string(), None).expect("Country code to be valid"),
-    transaction_type: TransactionType::B2B,
-    calculation_type: TaxCalculationType::Destination,
-    trade_agreement_override: None,
-    is_digital_product_or_service: false,
-    has_resale_certificate: false,
-    ignore_threshold: false,
-    vat_rate: Some(VatRate::Standard),
-};
 
-// Canadian domestic scenario
+// German B2C scenario
+let scenario = TaxScenario::new(
+    Region::new("DE".to_string(), None).expect("Valid German region"),
+    Region::new("DE".to_string(), None).expect("Valid German region"),
+    TransactionType::B2C,
+);
+let tax = scenario.calculate_tax(100.0, &db);
+assert_eq!(tax, 19.0); // Germany's MWST
+
+let rates = scenario.get_rates(100.0, &db);
+assert_eq!(rates.len(), 1);
+assert_eq!(rates[0].rate, 0.19);
+assert_eq!(rates[0].tax_type, TaxType::VAT(VatRate::Standard));
+assert_eq!(rates[0].compound, false);
+
+
+// EU B2B scenario
+let scenario = TaxScenario::new(
+    Region::new("DE".to_string(), None).expect("Valid German region"),
+    Region::new("FR".to_string(), None).expect("Valid French region"),
+    TransactionType::B2B,
+);
+
+let tax = scenario.calculate_tax(100.0, &db);
+assert_eq!(tax, 0.0); // EU reverse charge mechanism
+
+
+// EU export
+let scenario = TaxScenario::new(
+    Region::new("DE".to_string(), None).expect("Valid German region"),
+    Region::new("TH".to_string(), None).expect("Valid Thai region"),
+    TransactionType::B2C,
+);
+
+let tax = scenario.calculate_tax(100.0, &db);
+assert_eq!(tax, 0.0); // Export from EU to non-EU country is zero-rated for B2C too
+
+
+// USA B2C scenario; ignore threshold
+let mut scenario = TaxScenario::new(
+    Region::new("US".to_string(), Some("CA".to_string())).expect("Valid US-CA region"),
+    Region::new("US".to_string(), Some("WA".to_string())).expect("Valid US-WA region"),
+    TransactionType::B2C,
+);
+scenario.ignore_threshold = true;
+
+let tax = scenario.calculate_tax(100.0, &db);
+assert_eq!(tax, 6.5); // Washington state sales tax rate for remote sellers
+
+
+// Canadian B2C scenario; above threshold
+let scenario = TaxScenario::new(
+    Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
+    Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
+    TransactionType::B2C,
+);
+
+let tax = scenario.calculate_tax(100000.0, &db);
+assert_eq!(tax, 12350.0); // Combined GST (5%) + PST (7%) for British Columbia
+
+
+// Canadian B2C: More options
 let ca_domestic = TaxScenario {
     source_region: Region::new("CA".to_string(), Some("BC".to_string())).expect("Country and region code is invalid"),
     destination_region: Region::new("CA".to_string(), Some("BC".to_string())).expect("Country and region code is invalid"),
@@ -51,9 +100,7 @@ let ca_domestic = TaxScenario {
     vat_rate: None,
 };
 
-let amount = 100.0;
-println!("EU B2B tax: {}", eu_b2b.calculate_tax(amount, &db));
-println!("CA domestic tax: {}", ca_domestic.calculate_tax(amount, &db));
+println!("CA domestic tax: {}", ca_domestic.calculate_tax(100.0, &db));
 ```
 
 Refer to the tests for more examples.

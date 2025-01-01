@@ -1,6 +1,6 @@
 use log::debug;
 
-use crate::{errors::InputValidationError, types::{TradeAgreement, TradeAgreementOverride}};
+use crate::{errors::InputValidationError, provider::TaxRate, types::{TaxType, TradeAgreement, TradeAgreementOverride, VatRate}};
 use super::{provider::TaxDatabase, types::{Region, TaxCalculationType, TaxScenario, TransactionType}};
 
 impl TaxScenario {
@@ -139,40 +139,56 @@ impl TaxScenario {
         self.get_calculation_from_agreement(&agreement.unwrap(), amount)
     }
 
-    pub fn calculate_tax(&self, amount: f64, db: &TaxDatabase) -> f64 {
+    pub fn get_rates(&self, amount: f64, db: &TaxDatabase) -> Vec<TaxRate> {
         let calculation_type = self.determine_calculation_type(db, amount);
-        
+
         match calculation_type {
-            TaxCalculationType::ReverseCharge | 
-            TaxCalculationType::ZeroRated | 
-            TaxCalculationType::Exempt => 0.0,
+            TaxCalculationType::ReverseCharge => vec![TaxRate {
+                tax_type: TaxType::VAT(VatRate::ReverseCharge),
+                compound: false,
+                rate: 0.0,
+            }],
+            TaxCalculationType::ZeroRated => vec![TaxRate {
+                tax_type: TaxType::VAT(VatRate::Zero),
+                compound: false,
+                rate: 0.0,
+            }], 
+            TaxCalculationType::Exempt => vec![TaxRate {
+                tax_type: TaxType::VAT(VatRate::Exempt),
+                compound: false,
+                rate: 0.0,
+            }],
             _ => {
                 let region = match calculation_type {
                     TaxCalculationType::Origin => &self.source_region,
                     _ => &self.destination_region,
                 };
 
-                let rates = db.get_rate(
+                db.get_rate(
                     &region.country,
                     region.region.as_deref(),
                     self.vat_rate.as_ref()
-                );
-
-                let mut total_tax = 0.0;
-                let mut base_amount = amount;
-
-                for rate in rates {
-                    let tax_amount = if rate.compound {
-                        (base_amount + total_tax) * rate.rate
-                    } else {
-                        base_amount * rate.rate
-                    };
-                    total_tax += tax_amount;
-                }
-
-                (total_tax * 100.0).round() / 100.0
+                )
             }
         }
+    }
+
+    pub fn calculate_tax(&self, amount: f64, db: &TaxDatabase) -> f64 {
+        let rates = self.get_rates(amount, db);
+
+        let mut total_tax = 0.0;
+        let base_amount = amount;
+
+        for rate in rates {
+            let tax_amount = if rate.compound {
+                (base_amount + total_tax) * rate.rate
+            } else {
+                base_amount * rate.rate
+            };
+            total_tax += tax_amount;
+        }
+
+        (total_tax * 100.0).round() / 100.0
     }
 }
 
