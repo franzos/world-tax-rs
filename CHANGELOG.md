@@ -4,31 +4,38 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
+## [0.2.0]
+
+### Added
+
+- More explicit when something couldn't be found or matched
+- Error handling: ProcessingError, DatabaseError
+
 ## [0.1.4]
 
-## Changed
+### Changed
 
 - TaxType, VatRate, TaxRate: Macro to Serialize and Deserialize
 
 ## [0.1.3]
 
-## Added
+### Added
 
 - Helper to load database with included rates `TaxDatabase::new()`
 
 ## [0.1.2]
 
-## Added
+### Added
 
 - new `get_rates` function to access the rates directly
 
-## Changed
+### Changed
 
 - Removed unnecessary `main.rs` file
 - Refactor tests to satisfy compiler warnings
 
 ## [0.1.1]
 
-## Added
+### Added
 
 - Input validation for countries and regions (states)

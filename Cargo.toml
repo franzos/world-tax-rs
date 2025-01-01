@@ -1,6 +1,6 @@
 [package]
 name = "world-tax"
-version = "0.1.4"
+version = "0.2.0"
 edition = "2021"
 license = "MIT"
 description = "A simple world tax calculator"
@@ -17,3 +17,5 @@ log = "0.4"
 env_logger = "0.11"
 rust_iso3166 = "0.1.13"
 thiserror = "2.0.9"
+strum = "0.26.3"
+strum_macros = "0.26.4"

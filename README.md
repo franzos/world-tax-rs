@@ -36,10 +36,10 @@ let scenario = TaxScenario::new(
     Region::new("DE".to_string(), None).expect("Valid German region"),
     TransactionType::B2C,
 );
-let tax = scenario.calculate_tax(100.0, &db);
+let tax = scenario.calculate_tax(100.0, &db).expect("Tax calculation should succeed");
 assert_eq!(tax, 19.0); // Germany's MWST
 
-let rates = scenario.get_rates(100.0, &db);
+let rates = scenario.get_rates(100.0, &db).expect("Rates should be available");
 assert_eq!(rates.len(), 1);
 assert_eq!(rates[0].rate, 0.19);
 assert_eq!(rates[0].tax_type, TaxType::VAT(VatRate::Standard));
@@ -53,7 +53,7 @@ let scenario = TaxScenario::new(
     TransactionType::B2B,
 );
 
-let tax = scenario.calculate_tax(100.0, &db);
+let tax = scenario.calculate_tax(100.0, &db).expect("Tax calculation should succeed");
 assert_eq!(tax, 0.0); // EU reverse charge mechanism
 
 
@@ -64,7 +64,7 @@ let scenario = TaxScenario::new(
     TransactionType::B2C,
 );
 
-let tax = scenario.calculate_tax(100.0, &db);
+let tax = scenario.calculate_tax(100.0, &db).expect("Tax calculation should succeed");
 assert_eq!(tax, 0.0); // Export from EU to non-EU country is zero-rated for B2C too
 
 
@@ -76,7 +76,7 @@ let mut scenario = TaxScenario::new(
 );
 scenario.ignore_threshold = true;
 
-let tax = scenario.calculate_tax(100.0, &db);
+let tax = scenario.calculate_tax(100.0, &db).expect("Tax calculation should succeed");
 assert_eq!(tax, 6.5); // Washington state sales tax rate for remote sellers
 
 
@@ -87,7 +87,7 @@ let scenario = TaxScenario::new(
     TransactionType::B2C,
 );
 
-let tax = scenario.calculate_tax(100000.0, &db);
+let tax = scenario.calculate_tax(100000.0, &db).expect("Tax calculation should succeed");
 assert_eq!(tax, 12350.0); // Combined GST (5%) + PST (7%) for British Columbia
 
 

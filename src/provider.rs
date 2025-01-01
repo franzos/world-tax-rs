@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
-use crate::types::TradeAgreement;
+use crate::{errors::DatabaseError, types::TradeAgreement};
 use super::types::{Country, TaxSystemType, TaxType, VatRate};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -59,80 +59,89 @@ impl TaxDatabase {
         None
     }
 
-    pub fn get_rule(&self, rule_id: &str) -> Option<TradeAgreement> {
+    pub fn get_country(&self, code: &str) -> Result<&Country, DatabaseError> {
+        let country = self.countries.get(code);
+        if country.is_some() {
+            Ok(country.unwrap())
+        } else {
+            Err(DatabaseError::CountryNotFound(code.to_string()))
+        }
+    }
+
+    pub fn get_rule(&self, rule_id: &str) -> Result<TradeAgreement, DatabaseError> {
         let rule = self.trade_agreements.get(rule_id);
         if rule.is_some() {
-            Some(rule.unwrap().clone())
+            Ok(rule.unwrap().clone())
         } else {
-            None
+            Err(DatabaseError::TradeAgreementNotFound(rule_id.to_string()))
         }
     }
 
-    pub fn get_country(&self, code: &str) -> Option<&Country> {
-        self.countries.get(code)
-    }
-
-    pub fn get_rate(&self, country: &str, region: Option<&str>, vat_rate: Option<&VatRate>) -> Vec<TaxRate> {
+    pub fn get_rate(&self, country: &str, region: Option<&str>, vat_rate: Option<&VatRate>) -> Result<Vec<TaxRate>, DatabaseError> {
         let mut rates = Vec::new();
-        
-        if let Some(country_data) = self.countries.get(country) {
-            if country == "US" && region.is_some() {
-                if let Some(states) = &country_data.states {
-                    if let Some(state) = states.get(region.unwrap()) {
-                        rates.push(TaxRate {
-                            rate: state.standard_rate,
-                            tax_type: TaxType::StateSalesTax,
-                            compound: false,
-                        });
-                    }
-                }
-            }
-            match country_data.tax_type {
-                TaxSystemType::Vat => {
-                    if let Some(rate) = match vat_rate.unwrap_or(&VatRate::Standard) {
-                        VatRate::Standard => Some(country_data.standard_rate),
-                        VatRate::Reduced => country_data.reduced_rate,
-                        VatRate::ReducedAlt => country_data.reduced_rate_alt,
-                        VatRate::SuperReduced => country_data.super_reduced_rate,
-                        VatRate::Zero => Some(0.0),
-                        VatRate::Exempt => Some(0.0),
-                        VatRate::ReverseCharge => Some(0.0),
-                    } {
-                        rates.push(TaxRate {
-                            rate,
-                            tax_type: TaxType::VAT(vat_rate.cloned().unwrap_or(VatRate::Standard)),
-                            compound: false,
-                        });
-                    }
-                },
-                TaxSystemType::Gst => {
+
+        let country_data = self.get_country(country)?;
+
+        if country == "US" && region.is_some() {
+            if let Some(states) = &country_data.states {
+                if let Some(state) = states.get(region.unwrap()) {
                     rates.push(TaxRate {
-                        rate: country_data.standard_rate,
-                        tax_type: TaxType::GST,
+                        rate: state.standard_rate,
+                        tax_type: TaxType::StateSalesTax,
                         compound: false,
                     });
-
-                    if let Some(states) = &country_data.states {
-                        if let Some(region) = region {
-                            if let Some(state) = states.get(region) {
-                                let tax_type = match state.tax_type {
-                                    TaxSystemType::Pst => TaxType::PST,
-                                    TaxSystemType::Hst => TaxType::HST,
-                                    _ => return rates,
-                                };
-                                rates.push(TaxRate {
-                                    rate: state.standard_rate,
-                                    tax_type: tax_type.clone(),
-                                    compound: matches!(tax_type, TaxType::PST),
-                                });
-                            }
-                        }
-                    }
-                },
-                _ => {}
+                }
             }
         }
-        
-        rates
+        match country_data.tax_type {
+            TaxSystemType::Vat => {
+                if let Some(rate) = match vat_rate.unwrap_or(&VatRate::Standard) {
+                    VatRate::Standard => Some(country_data.standard_rate),
+                    VatRate::Reduced => country_data.reduced_rate,
+                    VatRate::ReducedAlt => country_data.reduced_rate_alt,
+                    VatRate::SuperReduced => country_data.super_reduced_rate,
+                    VatRate::Zero => Some(0.0),
+                    VatRate::Exempt => Some(0.0),
+                    VatRate::ReverseCharge => Some(0.0),
+                } {
+                    rates.push(TaxRate {
+                        rate,
+                        tax_type: TaxType::VAT(vat_rate.cloned().unwrap_or(VatRate::Standard)),
+                        compound: false,
+                    });
+                }
+            },
+            TaxSystemType::Gst => {
+                rates.push(TaxRate {
+                    rate: country_data.standard_rate,
+                    tax_type: TaxType::GST,
+                    compound: false,
+                });
+
+                if let Some(states) = &country_data.states {
+                    if let Some(region) = region {
+                        if let Some(state) = states.get(region) {
+                            let tax_type = match state.tax_type {
+                                TaxSystemType::Pst => TaxType::PST,
+                                TaxSystemType::Hst => TaxType::HST,
+                                _ => return Ok(rates),
+                            };
+                            rates.push(TaxRate {
+                                rate: state.standard_rate,
+                                tax_type: tax_type.clone(),
+                                compound: matches!(tax_type, TaxType::PST),
+                            });
+                        }
+                    }
+                }
+            },
+            _ => {}
+        }
+
+        if rates.is_empty() {
+            Err(DatabaseError::VatRateNotFound(vat_rate.unwrap_or(&VatRate::Standard).to_string()))
+        } else {
+            return Ok(rates)
+        }
     }
 }

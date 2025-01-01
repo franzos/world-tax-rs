@@ -1,5 +1,8 @@
+use log::debug;
 use serde::{Deserialize, Deserializer, Serialize};
+use strum_macros::Display;
 use std::collections::HashMap;
+use crate::errors::InputValidationError;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -12,7 +15,7 @@ pub enum TaxSystemType {
     None,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum TransactionType {
     B2B,
     B2C,
@@ -47,7 +50,7 @@ pub enum TaxType {
     CompoundTax,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Display, Serialize, Deserialize, PartialEq)]
 pub enum VatRate {
     Standard,    
     Reduced,     
@@ -214,6 +217,34 @@ pub struct Country {
 pub struct Region {
     pub country: String,
     pub region: Option<String>,
+}
+
+impl Region {
+    pub fn new(country: String, region: Option<String>) -> Result<Self, InputValidationError> {
+        Self::validate(&country, &region)?;
+        Ok(Self { country, region })
+
+    }
+
+    fn validate(country: &str, region: &Option<String>) -> Result<(), InputValidationError> {
+        let country_info = rust_iso3166::from_alpha2(country)
+            .ok_or_else(|| InputValidationError::InvalidCountryCode(country.to_string()))?;
+            
+        debug!("Found country: {}", country_info.name);
+
+        if let Some(region_code) = region {
+            let _ = country_info.subdivisions()
+                .ok_or_else(|| InputValidationError::UnexpectedRegionCode(region_code.clone()))?;
+                
+            let country_region_code = format!("{}-{}", country, region_code);
+            let region = rust_iso3166::iso3166_2::from_code(&country_region_code)
+                .ok_or_else(|| InputValidationError::InvalidRegionCode(region_code.clone()))?;
+
+                debug!("Found region: {}", region.name);
+        }
+
+        Ok(())
+    }
 }
 
 #[derive(Debug, Clone)]
