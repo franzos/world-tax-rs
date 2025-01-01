@@ -258,4 +258,9 @@ mod tests {
         let tax = scenario.calculate_tax(100.0, &db);
         assert_eq!(tax, 5.0); // GCC countries have no VAT
     }
+
+    #[test]
+    fn load_included_db() {
+        let _ = TaxDatabase::new();
+    }
 }

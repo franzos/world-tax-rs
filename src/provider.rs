@@ -15,6 +15,13 @@ pub struct TaxDatabase {
 }
 
 impl TaxDatabase {
+    pub fn new() -> Result<Self, serde_json::Error> {
+        let countries = include_str!("../vat_rates.json");
+        let trade_agreements = include_str!("../trade_agreements.json");
+
+        Self::from_json(countries, trade_agreements)
+    }
+
     pub fn from_json(countries_json: &str, trade_agreements_json: &str) -> Result<Self, serde_json::Error> {
         let countries: HashMap<String, Country> = serde_json::from_str(countries_json)?;
         let trade_agreements: HashMap<String, TradeAgreement> = serde_json::from_str(trade_agreements_json)?;

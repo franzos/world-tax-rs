@@ -21,6 +21,10 @@ If something is off, I'd appreciate a PR.
 Quick preview:
 
 ```rs
+// Load the database from included JSON files
+let db = TaxDatabase::new()?;
+
+// Load the database from your own JSON files
 let rates_json_data = include_str!("../vat_rates.json");
 let agreements_json_data = include_str!("../trade_agreements.json");
 let db = TaxDatabase::from_json(rates_json_data, agreements_json_data)?;
