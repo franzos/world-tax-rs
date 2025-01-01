@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
+## [0.1.4]
+
+## Changed
+
+- TaxType, VatRate, TaxRate: Macro to Serialize and Deserialize
+
 ## [0.1.3]
 
 ## Added

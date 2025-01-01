@@ -37,7 +37,7 @@ pub enum TaxCalculationType {
     ThresholdBased
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize ,PartialEq)]
 pub enum TaxType {
     VAT(VatRate),
     GST,
@@ -47,7 +47,7 @@ pub enum TaxType {
     CompoundTax,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum VatRate {
     Standard,    
     Reduced,     

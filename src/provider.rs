@@ -1,8 +1,9 @@
 use std::collections::HashMap;
+use serde::{Deserialize, Serialize};
 use crate::types::TradeAgreement;
 use super::types::{Country, TaxSystemType, TaxType, VatRate};
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct TaxRate {
     pub rate: f64,
     pub tax_type: TaxType,
