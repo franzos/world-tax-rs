@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
+## [0.3.0]
+
+### Changed
+
+- Bump depdenencies
+- More comments to improve usability
+- Cleanup exports: All important types are now re-exported in `lib.rs`
+
+### Removed
+
+- `TaxScenario.calculation_type`: Unnecessary
+- `TaxType::CompoundTax`: Unnecessary
+
+### Fixed
+
+- Calculation of rates for Quebec (CA), B2C
+
+## [0.2.1]
+
+### Changed
+
+- Improve handling when used as part of an API (snake_case, lowercase serialization)
+
 ## [0.2.0]
 
 ### Added

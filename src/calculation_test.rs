@@ -1,9 +1,13 @@
 #[cfg(test)]
 mod tests {
-    use crate::types::TaxType;
     use crate::{
-        provider::TaxDatabase,
-        types::{Region, TransactionType, VatRate, TaxScenario},
+        TaxType,
+        TradeAgreementOverride,
+        TaxDatabase,
+        Region,
+        TransactionType,
+        VatRate,
+        TaxScenario
     };
 
     fn setup() -> TaxDatabase {
@@ -257,6 +261,167 @@ mod tests {
 
         let tax = scenario.calculate_tax(100.0, &db).expect("Tax calculation should succeed");
         assert_eq!(tax, 5.0); // GCC countries have no VAT
+    }
+
+    #[test]
+    fn test_gcc_cross_border_b2c_manual() {
+        let db = setup();
+        let scenario = TaxScenario {
+            source_region: Region::new("AE".to_string(), None).expect("Valid UAE region"),
+            destination_region: Region::new("QA".to_string(), None).expect("Valid Qatar region"),
+            transaction_type: TransactionType::B2C,
+            trade_agreement_override: None,
+            is_digital_product_or_service: false,
+            has_resale_certificate: false,
+            ignore_threshold: false,
+            vat_rate:None,
+        };
+
+        let tax = scenario.calculate_tax(100.0, &db).expect("Tax calculation should succeed");
+        assert_eq!(tax, 5.0); // GCC countries have no VAT
+    }
+
+    #[test]
+    fn test_gcc_cross_border_b2c_manual_no_agreement() {
+        let db = setup();
+        let scenario = TaxScenario {
+            source_region: Region::new("AE".to_string(), None).expect("Valid UAE region"),
+            destination_region: Region::new("QA".to_string(), None).expect("Valid Qatar region"),
+            transaction_type: TransactionType::B2C,
+            trade_agreement_override: Some(TradeAgreementOverride::NoAgreement),
+            is_digital_product_or_service: false,
+            has_resale_certificate: false,
+            ignore_threshold: false,
+            vat_rate:None,
+        };
+
+        let tax = scenario.calculate_tax(100.0, &db).expect("Tax calculation should succeed");
+        assert_eq!(tax, 0.0); // GCC countries have no VAT
+    }
+
+    #[test]
+    fn test_canadian_quebec_gst_qst() {
+        let db = setup();
+        let scenario = TaxScenario::new(
+            Region::new("CA".to_string(), Some("QC".to_string())).expect("Valid Canadian QC region"),
+            Region::new("CA".to_string(), Some("QC".to_string())).expect("Valid Canadian QC region"),
+            TransactionType::B2C,
+        );
+        
+        let rates = scenario.get_rates(100.0, &db).expect("Rates should be found");
+        assert_eq!(rates.len(), 2); // Should have both GST and QST
+        
+        let gst_rate = rates.iter().find(|r| matches!(r.tax_type, TaxType::GST)).expect("Should have GST");
+        assert_eq!(gst_rate.rate, 0.05); // 5% GST
+        
+        let qst_rate = rates.iter().find(|r| matches!(r.tax_type, TaxType::QST)).expect("Should have QST");
+        assert_eq!(qst_rate.rate, 0.09975); // 9.975% QST
+        assert!(qst_rate.compound); // QST should compound on GST
+    }
+
+
+    #[test]
+    fn test_canadian_nova_scotia_hst() {
+        let db = setup();
+        let scenario = TaxScenario::new(
+            Region::new("CA".to_string(), Some("NS".to_string())).expect("Valid Canadian NS region"),
+            Region::new("CA".to_string(), Some("NS".to_string())).expect("Valid Canadian NS region"),
+            TransactionType::B2C,
+        );
+        
+        let rates = scenario.get_rates(100.0, &db).expect("Rates should be found");
+        assert_eq!(rates.len(), 1); // Should only have HST
+        assert_eq!(rates[0].tax_type, TaxType::HST);
+        assert_eq!(rates[0].rate, 0.10); // Nova Scotia HST rate 10%
+        assert!(!rates[0].compound); // HST should not compound
+    }
+
+    #[test]
+    fn test_eu_zero_rate() {
+        let db = setup();
+        let mut scenario = TaxScenario::new(
+            Region::new("IE".to_string(), None).expect("Valid Irish region"),
+            Region::new("IE".to_string(), None).expect("Valid Irish region"),
+            TransactionType::B2C,
+        );
+        scenario.vat_rate = Some(VatRate::Zero);
+        
+        let tax = scenario.calculate_tax(100.0, &db).expect("Tax calculation should succeed");
+        assert_eq!(tax, 0.0); // Zero-rated goods in Ireland
+    }
+
+    #[test]
+    fn test_multiple_tax_rates() {
+        let db = setup();
+        let scenario = TaxScenario::new(
+            Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
+            Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
+            TransactionType::B2C,
+        );
+        
+        let rates = scenario.get_rates(100000.0, &db).expect("Rates should be found");
+        assert_eq!(rates.len(), 2); // Should have both GST and PST
+        assert!(rates.iter().any(|r| matches!(r.tax_type, TaxType::GST)));
+        assert!(rates.iter().any(|r| matches!(r.tax_type, TaxType::PST)));
+    }
+
+    #[test]
+    fn test_reverse_charge_vat() {
+        let db = setup();
+        let mut scenario = TaxScenario::new(
+            Region::new("DE".to_string(), None).expect("Valid German region"),
+            Region::new("FR".to_string(), None).expect("Valid French region"),
+            TransactionType::B2B,
+        );
+        scenario.vat_rate = Some(VatRate::ReverseCharge);
+        
+        let rates = scenario.get_rates(100.0, &db).expect("Rates should be found");
+        assert_eq!(rates.len(), 1);
+        assert_eq!(rates[0].rate, 0.0);
+        assert!(matches!(rates[0].tax_type, TaxType::VAT(VatRate::ReverseCharge)));
+    }
+
+    #[test]
+    fn test_us_state_no_sales_tax() {
+        let db = setup();
+        let scenario = TaxScenario::new(
+            Region::new("US".to_string(), Some("OR".to_string())).expect("Valid US-OR region"),
+            Region::new("US".to_string(), Some("OR".to_string())).expect("Valid US-OR region"),
+            TransactionType::B2C,
+        );
+        
+        let tax = scenario.calculate_tax(100.0, &db).expect("Tax calculation should succeed");
+        assert_eq!(tax, 0.0); // Oregon has no sales tax
+    }
+
+    #[test]
+    fn test_specific_trade_agreement() {
+        // let db = setup();
+        let mut scenario = TaxScenario::new(
+            Region::new("DE".to_string(), None).expect("Valid German region"),
+            Region::new("FR".to_string(), None).expect("Valid French region"),
+            TransactionType::B2C,
+        );
+        scenario.trade_agreement_override = Some(TradeAgreementOverride::UseAgreement("EU".to_string()));
+        
+        // let tax = scenario.calculate_tax(100.0, &db).expect("Tax calculation should succeed");
+        // Assert based on EU agreement rules
+    }
+
+    #[test]
+    fn test_exempt_vat_rate() {
+        let db = setup();
+        let mut scenario = TaxScenario::new(
+            Region::new("GB".to_string(), None).expect("Valid UK region"),
+            Region::new("GB".to_string(), None).expect("Valid UK region"),
+            TransactionType::B2C,
+        );
+        scenario.vat_rate = Some(VatRate::Exempt);
+        
+        let rates = scenario.get_rates(100.0, &db).expect("Rates should be found");
+        assert_eq!(rates.len(), 1);
+        assert_eq!(rates[0].rate, 0.0);
+        assert!(matches!(rates[0].tax_type, TaxType::VAT(VatRate::Exempt)));
     }
 
     #[test]

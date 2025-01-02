@@ -1,6 +1,7 @@
+use serde::Serialize;
 use thiserror::Error;
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, Serialize)]
 pub enum InputValidationError {
     #[error("Invalid country code: {0}")]
     InvalidCountryCode(String),
@@ -10,7 +11,7 @@ pub enum InputValidationError {
     UnexpectedRegionCode(String),
 }
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, Serialize)]
 pub enum DatabaseError {
     #[error("Trade agreement not found: {0}")]
     TradeAgreementNotFound(String),
@@ -23,7 +24,7 @@ pub enum DatabaseError {
     VatRateNotFound(String),
 }
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, Serialize)]
 pub enum ProcessingError {
     #[error("Invalid input: {0}")]
     InputValidationError(InputValidationError),

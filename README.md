@@ -96,7 +96,6 @@ let ca_domestic = TaxScenario {
     source_region: Region::new("CA".to_string(), Some("BC".to_string())).expect("Country and region code is invalid"),
     destination_region: Region::new("CA".to_string(), Some("BC".to_string())).expect("Country and region code is invalid"),
     transaction_type: TransactionType::B2C,
-    calculation_type: TaxCalculationType::Destination,
     trade_agreement_override: None,
     is_digital_product_or_service: false,
     has_resale_certificate: false,
@@ -112,12 +111,12 @@ Refer to the tests for more examples.
 ### Calculation type
 
 Options are:
-- `TaxCalculationType::Origin`
-- `TaxCalculationType::Destination`
-- `TaxCalculationType::ReverseCharge` (commonly found in EU B2B transactions)
-- `TaxCalculationType::ZeroRated`
-- `TaxCalculationType::Exempt`
-- `TaxCalculationType::None`
+- `TaxCalculationType::Origin`: Calculated based on the source
+- `TaxCalculationType::Destination`: Calculated based on the destination
+- `TaxCalculationType::ReverseCharge`: Commonly found in EU B2B transactions
+- `TaxCalculationType::ZeroRated`: No tax
+- `TaxCalculationType::Exempt`: Tax is exempt
+- `TaxCalculationType::None`: No calculation
 
 Lastly, this is mostly for internal use:
 - `TaxCalculationType::ThresholdBased`
