@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
+## [0.2.1]
+
+### Changed
+
+- Improve handling when used as part of an API (snake_case, lowercase serialization)
+
 ## [0.2.0]
 
 ### Added

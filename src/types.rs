@@ -16,6 +16,7 @@ pub enum TaxSystemType {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum TransactionType {
     B2B,
     B2C,
@@ -41,6 +42,7 @@ pub enum TaxCalculationType {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize ,PartialEq)]
+#[serde(rename_all = "snake_case")]
 pub enum TaxType {
     VAT(VatRate),
     GST,
@@ -51,6 +53,7 @@ pub enum TaxType {
 }
 
 #[derive(Debug, Clone, Display, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "snake_case")]
 pub enum VatRate {
     Standard,    
     Reduced,     
