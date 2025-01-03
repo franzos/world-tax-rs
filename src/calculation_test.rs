@@ -9,6 +9,7 @@ mod tests {
         VatRate,
         TaxScenario
     };
+    use rust_decimal_macros::dec;
 
     fn setup() -> TaxDatabase {
         let _ = env_logger::builder()
@@ -395,6 +396,21 @@ mod tests {
     }
 
     #[test]
+    fn test_us_states_get_rates() {
+        let db = setup();
+        let mut scenario = TaxScenario::new(
+            Region::new("US".to_string(), Some("AS".to_string())).expect("Valid US-AK region"),
+            Region::new("US".to_string(), Some("CA".to_string())).expect("Valid US-CA region"),
+            TransactionType::B2C,
+        );
+        scenario.ignore_threshold = true;
+        
+        let rates = scenario.get_rates(1.0, &db).expect("Rates should be found");
+        assert_eq!(rates.len(), 1);
+        assert_eq!(rates[0].rate, 0.0825); // California sales tax rate
+    }
+
+    #[test]
     fn test_specific_trade_agreement() {
         // let db = setup();
         let mut scenario = TaxScenario::new(
@@ -422,6 +438,37 @@ mod tests {
         assert_eq!(rates.len(), 1);
         assert_eq!(rates[0].rate, 0.0);
         assert!(matches!(rates[0].tax_type, TaxType::VAT(VatRate::Exempt)));
+    }
+
+
+    #[test]
+    fn test_decimal_german_vat_calculation() {
+        let db = setup();
+        let scenario = TaxScenario::new(
+            Region::new("DE".to_string(), None).expect("Valid German region"),
+            Region::new("DE".to_string(), None).expect("Valid German region"),
+            TransactionType::B2C,
+        );
+        
+        let tax = scenario.calculate_tax_decimal(dec!(100.00), &db).expect("Tax calculation should succeed");
+        assert_eq!(tax, dec!(19.00)); // Germany's VAT rate with precise decimal calculation
+    }
+
+    #[test]
+    fn test_decimal_multiple_compound_calculations() {
+        let db = setup();
+        let scenario = TaxScenario::new(
+            Region::new("CA".to_string(), Some("QC".to_string())).expect("Valid Canadian QC region"),
+            Region::new("CA".to_string(), Some("QC".to_string())).expect("Valid Canadian QC region"),
+            TransactionType::B2C,
+        );
+
+        let amount = dec!(7999999.99);
+        let decimal_tax = scenario.calculate_tax_decimal(amount, &db).expect("Decimal tax calculation should succeed");
+        let float_tax = scenario.calculate_tax(7999999.99, &db).expect("Float tax calculation should succeed");
+
+        assert_eq!(decimal_tax, dec!(1237899.998452625));
+        assert_eq!(float_tax, 1237900.0); // Should show difference from float calculation
     }
 
     #[test]

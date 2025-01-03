@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
+## [0.3.1]
+
+### Added
+
+- `calculate_tax_decimal` function to calculate tax for decimal numbers
+
 ## [0.3.0]
 
 ### Changed

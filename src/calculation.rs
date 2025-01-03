@@ -3,6 +3,9 @@
 //! This module provides the core tax calculation functionality, including
 //! determination of applicable tax rates, calculation types, and final tax amounts
 //! based on various scenarios and trade agreements.
+use rust_decimal::Decimal;
+use rust_decimal::prelude::{ToPrimitive, FromPrimitive};
+
 use crate::types::TaxSystemType;
 
 use super::{
@@ -394,5 +397,25 @@ impl TaxScenario {
         }
 
         Ok((total_tax * 100.0).round() / 100.0)
+    }
+
+    pub fn calculate_tax_decimal(&self, amount: Decimal, db: &TaxDatabase) -> Result<Decimal, ProcessingError> {
+        // Accuracy doesn't matter as much here, because we're looking for the treshold only
+        let amount_f64 = amount.to_f64().ok_or(ProcessingError::InvalidAmount)?;
+        let rates = self.get_rates(amount_f64, db)?;
+
+        let mut total_tax = Decimal::from(0);
+        let base_amount = amount;
+
+        for rate in rates {
+            let tax_amount = if rate.compound {
+                (base_amount + total_tax) * Decimal::from_f64(rate.rate).unwrap()
+            } else {
+                base_amount * Decimal::from_f64(rate.rate).unwrap()
+            };
+            total_tax += tax_amount;
+        }
+
+        Ok(total_tax)
     }
 }
