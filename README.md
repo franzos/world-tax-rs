@@ -70,8 +70,8 @@ assert_eq!(tax, 0.0); // Export from EU to non-EU country is zero-rated for B2C 
 
 // USA B2C scenario; ignore threshold
 let mut scenario = TaxScenario::new(
-    Region::new("US".to_string(), Some("CA".to_string())).expect("Valid US-CA region"),
-    Region::new("US".to_string(), Some("WA".to_string())).expect("Valid US-WA region"),
+    Region::new("US".to_string(), Some("US-CA".to_string())).expect("Valid US-CA region"),
+    Region::new("US".to_string(), Some("US-WA".to_string())).expect("Valid US-WA region"),
     TransactionType::B2C,
 );
 scenario.ignore_threshold = true;
@@ -82,8 +82,8 @@ assert_eq!(tax, 6.5); // Washington state sales tax rate for remote sellers
 
 // Canadian B2C scenario; above threshold
 let scenario = TaxScenario::new(
-    Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
-    Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
+    Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Valid Canadian BC region"),
+    Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Valid Canadian BC region"),
     TransactionType::B2C,
 );
 
@@ -93,8 +93,8 @@ assert_eq!(tax, 12350.0); // Combined GST (5%) + PST (7%) for British Columbia
 
 // Canadian B2C: More options
 let ca_domestic = TaxScenario {
-    source_region: Region::new("CA".to_string(), Some("BC".to_string())).expect("Country and region code is invalid"),
-    destination_region: Region::new("CA".to_string(), Some("BC".to_string())).expect("Country and region code is invalid"),
+    source_region: Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Country and region code is invalid"),
+    destination_region: Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Country and region code is invalid"),
     transaction_type: TransactionType::B2C,
     trade_agreement_override: None,
     is_digital_product_or_service: false,

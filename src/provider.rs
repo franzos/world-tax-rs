@@ -184,7 +184,7 @@ impl TaxDatabase {
     /// let rates = db.get_rate("FR", None, Some(&VatRate::Standard)).unwrap();
     /// 
     /// // Get state sales tax for California, US
-    /// let us_rates = db.get_rate("US", Some("CA"), None).unwrap();
+    /// let us_rates = db.get_rate("US", Some("US-CA"), None).unwrap();
     /// ```
     pub fn get_rate(&self, country: &str, region: Option<&str>, vat_rate: Option<&VatRate>) -> Result<Vec<TaxRate>, DatabaseError> {
         let country_data = self.get_country(country)?;
@@ -312,6 +312,7 @@ impl TaxDatabase {
         if let Some(region_code) = region {
             if let Some(states) = &country.states {
                 if let Some(state) = states.get(region_code) {
+                    debug!("############ Found state: {}", region_code);
                     match state.tax_type {
                         TaxSystemType::Hst => {
                             // HST replaces GST, single rate

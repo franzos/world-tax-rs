@@ -52,7 +52,7 @@
     "US": {
         "name": "United States",
         "type": "federal_state",
-        "members": ["CA", "WA", "NY", "TX", "FL", "IL", "PA", "NJ", "GA", "NC", "OH", "MI", "MA", "TN", "VA", "IN", "AZ", "CO", "MO", "WI", "MD", "WA", "KY", "LA", "OK", "UT", "NV", "IA", "KS", "AR", "CT", "NM", "MS", "RI", "NE", "SD", "VT", "DE", "ID", "MT", "WY", "ND", "AK", "HI"],
+        "members": ["US-CA", "US-WA", "US-NY", "US-TX", "US-FL", "US-IL", "US-PA", "US-NJ", "US-GA", "US-NC", "US-OH", "US-MI", "US-MA", "US-TN", "US-VA", "US-IN", "US-AZ", "US-CO", "US-MO", "US-WI", "US-MD", "US-WA", "US-KY", "US-LA", "US-OK", "US-UT", "US-NV", "US-IA", "US-KS", "US-AR", "US-CT", "US-NM", "US-MS", "US-RI", "US-NE", "US-SD", "US-VT", "US-DE", "US-ID", "US-MT", "US-WY", "US-ND", "US-AK", "US-HI"],
         "default_applicable": true,
         "applies_to": {
             "physical_goods": true,
@@ -78,7 +78,7 @@
     "CA": {
         "name": "Canada",
         "type": "federal_state",
-        "members": ["BC", "ON", "QC", "AB", "MB", "SK", "NS", "NB", "PE", "NL", "YT", "NT", "NU"],
+        "members": ["CA-BC", "CA-ON", "CA-QC", "CA-AB", "CA-MB", "CA-SK", "CA-NS", "CA-NB", "CA-PE", "CA-NL", "CA-YT", "CA-NT", "CA-NU"],
         "default_applicable": true,
         "applies_to": {
             "physical_goods": true,

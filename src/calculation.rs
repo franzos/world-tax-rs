@@ -122,11 +122,11 @@ impl TaxScenario {
             if self.destination_region.country == "CA" {
                 if let Some(region) = &self.destination_region.region {
                     // HST provinces should always charge HST
-                    if ["NS", "NB", "NL", "ON", "PE"].contains(&region.as_str()) {
+                    if ["CA-NS", "CA-NB", "CA-NL", "CA-ON", "CA-PE"].contains(&region.as_str()) {
                         return Ok(TaxCalculationType::Destination);
                     }
                     // QC should always charge GST+QST
-                    if region == "QC" {
+                    if region == "CA-QC" {
                         return Ok(TaxCalculationType::Destination);
                     }
                 }

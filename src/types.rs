@@ -324,7 +324,7 @@ pub struct Country {
 /// let france = Region::new("FR".to_string(), None).unwrap();
 /// 
 /// // Create a region for California, USA
-/// let california = Region::new("US".to_string(), Some("CA".to_string())).unwrap();
+/// let california = Region::new("US".to_string(), Some("US-CA".to_string())).unwrap();
 /// ```
 #[derive(Debug, Clone)]
 pub struct Region {
@@ -352,11 +352,10 @@ impl Region {
             let _ = country_info.subdivisions()
                 .ok_or_else(|| InputValidationError::UnexpectedRegionCode(region_code.clone()))?;
                 
-            let country_region_code = format!("{}-{}", country, region_code);
-            let region = rust_iso3166::iso3166_2::from_code(&country_region_code)
+            let region_info = rust_iso3166::iso3166_2::from_code(region_code)
                 .ok_or_else(|| InputValidationError::InvalidRegionCode(region_code.clone()))?;
 
-            debug!("Found region: {}", region.name);
+            debug!("Found region: {}", region_info.name);
         }
 
         Ok(())

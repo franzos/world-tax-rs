@@ -4,6 +4,11 @@
     "currency": "AED",
     "standard_rate": 0.05
   },
+  "AD": {
+    "type": "vat",
+    "currency": "EUR",
+    "standard_rate": 0.045
+  },
   "AI": {
     "type": "gst",
     "currency": "XCD",
@@ -122,39 +127,39 @@
     "currency": "CAD",
     "standard_rate": 0.05,
     "states": {
-      "BC": {
+      "CA-BC": {
         "standard_rate": 0.07,
         "type": "pst"
       },
-      "MB": {
+      "CA-MB": {
         "standard_rate": 0.07,
         "type": "pst"
       },
-      "NB": {
+      "CA-NB": {
         "standard_rate": 0.1,
         "type": "hst"
       },
-      "NL": {
+      "CA-NL": {
         "standard_rate": 0.1,
         "type": "hst"
       },
-      "NS": {
+      "CA-NS": {
         "standard_rate": 0.1,
         "type": "hst"
       },
-      "ON": {
+      "CA-ON": {
         "standard_rate": 0.08,
         "type": "hst"
       },
-      "PE": {
+      "CA-PE": {
         "standard_rate": 0.1,
         "type": "hst"
       },
-      "QC": {
+      "CA-QC": {
         "standard_rate": 0.09975,
         "type": "qst"
       },
-      "SK": {
+      "CA-SK": {
         "standard_rate": 0.06,
         "type": "pst"
       }
@@ -794,187 +799,187 @@
     "currency": "USD",
     "standard_rate": 0,
     "states": {
-      "AL": {
+      "US-AL": {
         "standard_rate": 0.04,
         "type": "vat"
       },
-      "AR": {
+      "US-AR": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "AZ": {
+      "US-AZ": {
         "standard_rate": 0.066,
         "type": "vat"
       },
-      "CA": {
+      "US-CA": {
         "standard_rate": 0.0825,
         "type": "vat"
       },
-      "CO": {
+      "US-CO": {
         "standard_rate": 0.029,
         "type": "vat"
       },
-      "CT": {
+      "US-CT": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "DC": {
+      "US-DC": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "FL": {
+      "US-FL": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "GA": {
+      "US-GA": {
         "standard_rate": 0.04,
         "type": "vat"
       },
-      "HI": {
+      "US-HI": {
         "standard_rate": 0.04,
         "type": "vat"
       },
-      "IA": {
+      "US-IA": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "ID": {
+      "US-ID": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "IL": {
+      "US-IL": {
         "standard_rate": 0.0625,
         "type": "vat"
       },
-      "IN": {
+      "US-IN": {
         "standard_rate": 0.07,
         "type": "vat"
       },
-      "KS": {
+      "US-KS": {
         "standard_rate": 0.063,
         "type": "vat"
       },
-      "KY": {
+      "US-KY": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "LA": {
+      "US-LA": {
         "standard_rate": 0.04,
         "type": "vat"
       },
-      "MA": {
+      "US-MA": {
         "standard_rate": 0.0625,
         "type": "vat"
       },
-      "MD": {
+      "US-MD": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "ME": {
+      "US-ME": {
         "standard_rate": 0.05,
         "type": "vat"
       },
-      "MI": {
+      "US-MI": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "MN": {
+      "US-MN": {
         "standard_rate": 0.06875,
         "type": "vat"
       },
-      "MO": {
+      "US-MO": {
         "standard_rate": 0.04225,
         "type": "vat"
       },
-      "MS": {
+      "US-MS": {
         "standard_rate": 0.07,
         "type": "vat"
       },
-      "NC": {
+      "US-NC": {
         "standard_rate": 0.0575,
         "type": "vat"
       },
-      "ND": {
+      "US-ND": {
         "standard_rate": 0.05,
         "type": "vat"
       },
-      "NE": {
+      "US-NE": {
         "standard_rate": 0.055,
         "type": "vat"
       },
-      "NJ": {
+      "US-NJ": {
         "standard_rate": 0.07,
         "type": "vat"
       },
-      "NM": {
+      "US-NM": {
         "standard_rate": 0.05,
         "type": "vat"
       },
-      "NV": {
+      "US-NV": {
         "standard_rate": 0.0685,
         "type": "vat"
       },
-      "NY": {
+      "US-NY": {
         "standard_rate": 0.04,
         "type": "vat"
       },
-      "OH": {
+      "US-OH": {
         "standard_rate": 0.055,
         "type": "vat"
       },
-      "OK": {
+      "US-OK": {
         "standard_rate": 0.045,
         "type": "vat"
       },
-      "PA": {
+      "US-PA": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "RI": {
+      "US-RI": {
         "standard_rate": 0.07,
         "type": "vat"
       },
-      "SC": {
+      "US-SC": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "SD": {
+      "US-SD": {
         "standard_rate": 0.04,
         "type": "vat"
       },
-      "TN": {
+      "US-TN": {
         "standard_rate": 0.07,
         "type": "vat"
       },
-      "TX": {
+      "US-TX": {
         "standard_rate": 0.0625,
         "type": "vat"
       },
-      "UT": {
+      "US-UT": {
         "standard_rate": 0.0595,
         "type": "vat"
       },
-      "VA": {
+      "US-VA": {
         "standard_rate": 0.05,
         "type": "vat"
       },
-      "VT": {
+      "US-VT": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "WA": {
+      "US-WA": {
         "standard_rate": 0.065,
         "type": "vat"
       },
-      "WI": {
+      "US-WI": {
         "standard_rate": 0.05,
         "type": "vat"
       },
-      "WV": {
+      "US-WV": {
         "standard_rate": 0.06,
         "type": "vat"
       },
-      "WY": {
+      "US-WY": {
         "standard_rate": 0.04,
         "type": "vat"
       }

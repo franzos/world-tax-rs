@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
+## [0.4.0]
+
+### Changed
+
+- Use ISO 3166-2 for regions (US, California: 'CA' -> 'US-CA')
+
 ## [0.3.1]
 
 ### Added

@@ -27,7 +27,7 @@ def convert_format1(data: Dict) -> Dict:
         # Handle states if present
         if "states" in country_data:
             converted["states"] = {
-                state_code: {
+                f"{country_code}-{state_code}": {
                     "standard_rate": state_data.get("rate", 0),
                     "type": state_data.get("type", "none")
                 }

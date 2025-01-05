@@ -41,8 +41,8 @@ mod tests {
     fn test_canadian_gst_bc_pst_below_threshold() {
         let db = setup();
         let scenario = TaxScenario::new(
-            Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
-            Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
+            Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Valid Canadian BC region"),
+            Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Valid Canadian BC region"),
             TransactionType::B2C,
         );
 
@@ -54,8 +54,8 @@ mod tests {
     fn test_canadian_gst_bc_pst_ignore_threshold() {
         let db = setup();
         let mut scenario = TaxScenario::new(
-            Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
-            Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
+            Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Valid Canadian BC region"),
+            Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Valid Canadian BC region"),
             TransactionType::B2C,
         );
         scenario.ignore_threshold = true;
@@ -68,8 +68,8 @@ mod tests {
     fn test_canadian_gst_bc_pst_above_threshold() {
         let db = setup();
         let scenario = TaxScenario::new(
-            Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
-            Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
+            Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Valid Canadian BC region"),
+            Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Valid Canadian BC region"),
             TransactionType::B2C,
         );
 
@@ -174,8 +174,8 @@ mod tests {
     fn test_us_interstate_b2c_below_threshold() {
         let db = setup();
         let scenario = TaxScenario::new(
-            Region::new("US".to_string(), Some("CA".to_string())).expect("Valid US-CA region"),
-            Region::new("US".to_string(), Some("WA".to_string())).expect("Valid US-WA region"),
+            Region::new("US".to_string(), Some("US-CA".to_string())).expect("Valid US-CA region"),
+            Region::new("US".to_string(), Some("US-WA".to_string())).expect("Valid US-WA region"),
             TransactionType::B2C,
         );
 
@@ -187,8 +187,8 @@ mod tests {
     fn test_us_interstate_b2c_ignore_threshold() {
         let db = setup();
         let mut scenario = TaxScenario::new(
-            Region::new("US".to_string(), Some("CA".to_string())).expect("Valid US-CA region"),
-            Region::new("US".to_string(), Some("WA".to_string())).expect("Valid US-WA region"),
+            Region::new("US".to_string(), Some("US-CA".to_string())).expect("Valid US-CA region"),
+            Region::new("US".to_string(), Some("US-WA".to_string())).expect("Valid US-WA region"),
             TransactionType::B2C,
         );
         scenario.ignore_threshold = true;
@@ -201,8 +201,8 @@ mod tests {
     fn test_us_interstate_b2c_above_threshold() {
         let db = setup();
         let scenario = TaxScenario::new(
-            Region::new("US".to_string(), Some("CA".to_string())).expect("Valid US-CA region"),
-            Region::new("US".to_string(), Some("WA".to_string())).expect("Valid US-WA region"),
+            Region::new("US".to_string(), Some("US-CA".to_string())).expect("Valid US-CA region"),
+            Region::new("US".to_string(), Some("US-WA".to_string())).expect("Valid US-WA region"),
             TransactionType::B2C,
         );
 
@@ -214,8 +214,8 @@ mod tests {
     fn test_us_interstate_b2b() {
         let db = setup();
         let mut scenario = TaxScenario::new(
-            Region::new("US".to_string(), Some("TX".to_string())).expect("Valid US-TX region"),
-            Region::new("US".to_string(), Some("WA".to_string())).expect("Valid US-WA region"),
+            Region::new("US".to_string(), Some("US-TX".to_string())).expect("Valid US-TX region"),
+            Region::new("US".to_string(), Some("US-WA".to_string())).expect("Valid US-WA region"),
             TransactionType::B2B,
         );
         scenario.has_resale_certificate = true;
@@ -228,8 +228,8 @@ mod tests {
     fn test_us_interstate_b2b_reseller() {
         let db = setup();
         let mut scenario = TaxScenario::new(
-            Region::new("US".to_string(), Some("WA".to_string())).expect("Valid US-WA region"),
-            Region::new("US".to_string(), Some("TX".to_string())).expect("Valid US-TX region"),
+            Region::new("US".to_string(), Some("US-WA".to_string())).expect("Valid US-WA region"),
+            Region::new("US".to_string(), Some("US-TX".to_string())).expect("Valid US-TX region"),
             TransactionType::B2B,
         );
         scenario.has_resale_certificate = true;
@@ -304,8 +304,8 @@ mod tests {
     fn test_canadian_quebec_gst_qst() {
         let db = setup();
         let scenario = TaxScenario::new(
-            Region::new("CA".to_string(), Some("QC".to_string())).expect("Valid Canadian QC region"),
-            Region::new("CA".to_string(), Some("QC".to_string())).expect("Valid Canadian QC region"),
+            Region::new("CA".to_string(), Some("CA-QC".to_string())).expect("Valid Canadian QC region"),
+            Region::new("CA".to_string(), Some("CA-QC".to_string())).expect("Valid Canadian QC region"),
             TransactionType::B2C,
         );
         
@@ -325,8 +325,8 @@ mod tests {
     fn test_canadian_nova_scotia_hst() {
         let db = setup();
         let scenario = TaxScenario::new(
-            Region::new("CA".to_string(), Some("NS".to_string())).expect("Valid Canadian NS region"),
-            Region::new("CA".to_string(), Some("NS".to_string())).expect("Valid Canadian NS region"),
+            Region::new("CA".to_string(), Some("CA-NS".to_string())).expect("Valid Canadian NS region"),
+            Region::new("CA".to_string(), Some("CA-NS".to_string())).expect("Valid Canadian NS region"),
             TransactionType::B2C,
         );
         
@@ -355,8 +355,8 @@ mod tests {
     fn test_multiple_tax_rates() {
         let db = setup();
         let scenario = TaxScenario::new(
-            Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
-            Region::new("CA".to_string(), Some("BC".to_string())).expect("Valid Canadian BC region"),
+            Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Valid Canadian BC region"),
+            Region::new("CA".to_string(), Some("CA-BC".to_string())).expect("Valid Canadian BC region"),
             TransactionType::B2C,
         );
         
@@ -386,8 +386,8 @@ mod tests {
     fn test_us_state_no_sales_tax() {
         let db = setup();
         let scenario = TaxScenario::new(
-            Region::new("US".to_string(), Some("OR".to_string())).expect("Valid US-OR region"),
-            Region::new("US".to_string(), Some("OR".to_string())).expect("Valid US-OR region"),
+            Region::new("US".to_string(), Some("US-OR".to_string())).expect("Valid US-OR region"),
+            Region::new("US".to_string(), Some("US-OR".to_string())).expect("Valid US-OR region"),
             TransactionType::B2C,
         );
         
@@ -399,8 +399,8 @@ mod tests {
     fn test_us_states_get_rates() {
         let db = setup();
         let mut scenario = TaxScenario::new(
-            Region::new("US".to_string(), Some("AS".to_string())).expect("Valid US-AK region"),
-            Region::new("US".to_string(), Some("CA".to_string())).expect("Valid US-CA region"),
+            Region::new("US".to_string(), Some("US-AS".to_string())).expect("Valid US-AK region"),
+            Region::new("US".to_string(), Some("US-CA".to_string())).expect("Valid US-CA region"),
             TransactionType::B2C,
         );
         scenario.ignore_threshold = true;
@@ -458,8 +458,8 @@ mod tests {
     fn test_decimal_multiple_compound_calculations() {
         let db = setup();
         let scenario = TaxScenario::new(
-            Region::new("CA".to_string(), Some("QC".to_string())).expect("Valid Canadian QC region"),
-            Region::new("CA".to_string(), Some("QC".to_string())).expect("Valid Canadian QC region"),
+            Region::new("CA".to_string(), Some("CA-QC".to_string())).expect("Valid Canadian QC region"),
+            Region::new("CA".to_string(), Some("CA-QC".to_string())).expect("Valid Canadian QC region"),
             TransactionType::B2C,
         );
 

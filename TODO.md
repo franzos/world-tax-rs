@@ -1,0 +1,4 @@
+- Provide all rules via JSON
+    - calculation.rs: Canadian provinces are hardcoded
+    - calculation.rs: Handling for US B2B resale certificates is hardcoded
+    - calculation.rs: Handling for interstate commerce (US, CA) is hardcoded
