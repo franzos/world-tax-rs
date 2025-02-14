@@ -145,6 +145,10 @@ Valid trade agreements are:
 
 There's no input validation at the moment.
 
+### Frontend
+
+If you have a JS/TS frontend, you can use [rust_iso3166-ts](https://github.com/franzos/rust_iso3166-ts) to access countries and subdivisions provided by `rust_iso3166` to make sure your inputs are identical.
+
 ## Update Rates
 
 ```bash
