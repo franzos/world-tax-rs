@@ -9,9 +9,11 @@ use log::debug;
 use serde::{Deserialize, Deserializer, Serialize};
 use strum_macros::Display;
 use std::collections::HashMap;
+use typeshare::typeshare;
 use crate::errors::InputValidationError;
 
 /// Represents different types of tax systems used globally.
+#[typeshare]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum TaxSystemType {
@@ -30,6 +32,7 @@ pub enum TaxSystemType {
 }
 
 /// Defines the type of transaction between parties.
+#[typeshare]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum TransactionType {
@@ -40,6 +43,7 @@ pub enum TransactionType {
 }
 
 /// Specifies how tax should be calculated for a given transaction.
+#[typeshare]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum TaxCalculationType {
@@ -60,7 +64,9 @@ pub enum TaxCalculationType {
 }
 
 /// Represents different types of taxes that can be applied.
+#[typeshare]
 #[derive(Debug, Clone, Serialize, Deserialize ,PartialEq)]
+#[serde(tag = "type", content = "content")]
 #[serde(rename_all = "snake_case")]
 pub enum TaxType {
     /// Value Added Tax with specific rate
@@ -78,6 +84,7 @@ pub enum TaxType {
 }
 
 /// Different rates that can be applied for Value Added Tax.
+#[typeshare]
 #[derive(Debug, Clone, Display, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum VatRate {
@@ -98,6 +105,7 @@ pub enum VatRate {
 }
 
 /// Defines the type of trade agreement between regions.
+#[typeshare]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum TradeAgreementType {
@@ -108,7 +116,9 @@ pub enum TradeAgreementType {
 }
 
 /// Override options for trade agreement application.
-#[derive(Debug, Clone)]
+#[typeshare]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", content = "content")]
 pub enum TradeAgreementOverride {
     /// Explicitly use a specific agreement (e.g., "EU", "USMCA")
     UseAgreement(String),
@@ -117,6 +127,7 @@ pub enum TradeAgreementOverride {
 }
 
 /// Specifies which types of goods/services an agreement applies to.
+#[typeshare]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppliesTo {
     /// Whether the agreement applies to physical goods
@@ -128,6 +139,7 @@ pub struct AppliesTo {
 }
 
 /// Represents a trade agreement between regions or states.
+#[typeshare]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TradeAgreement {
     /// Name of the trade agreement
@@ -157,6 +169,7 @@ impl TradeAgreement {
 }
 
 /// Configuration for tax calculation rules based on various thresholds and conditions.
+#[typeshare]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TaxRuleConfig {
     /// Default tax calculation type
@@ -235,6 +248,7 @@ impl TaxRuleConfig {
 }
 
 /// Collection of tax rules for different transaction scenarios
+#[typeshare]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TaxRules {
     /// Rules for internal B2B transactions
@@ -246,6 +260,7 @@ pub struct TaxRules {
 }
 
 /// Product-specific tax rules configuration
+#[typeshare]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProductRules {
     /// Default tax rule to apply
@@ -255,6 +270,7 @@ pub struct ProductRules {
 }
 
 /// Represents tax information for a state/province
+#[typeshare]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct State {
     /// Standard tax rate for the state
@@ -285,6 +301,7 @@ where
 }
 
 /// Represents tax information for a country
+#[typeshare]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Country {
     /// Type of tax system used in the country
@@ -326,6 +343,7 @@ pub struct Country {
 /// // Create a region for California, USA
 /// let california = Region::new("US".to_string(), Some("US-CA".to_string())).unwrap();
 /// ```
+#[typeshare]
 #[derive(Debug, Clone)]
 pub struct Region {
     /// ISO 3166-1 alpha-2 country code
@@ -363,6 +381,7 @@ impl Region {
 }
 
 /// Represents a complete tax calculation scenario
+#[typeshare]
 #[derive(Debug, Clone)]
 pub struct TaxScenario {
     /// Region where the seller is located
@@ -386,6 +405,7 @@ pub struct TaxScenario {
 }
 
 /// Represents a specific tax rate and its characteristics.
+#[typeshare]
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TaxRate {
     /// The numerical tax rate as a decimal (e.g., 0.20 for 20%)

@@ -149,6 +149,15 @@ There's no input validation at the moment.
 
 If you have a JS/TS frontend, you can use [rust_iso3166-ts](https://github.com/franzos/rust_iso3166-ts) to access countries and subdivisions provided by `rust_iso3166` to make sure your inputs are identical.
 
+### TypeScript Types
+
+Generate TypeScript types using [typeshare](https://1password.github.io/typeshare/):
+
+```bash
+cargo install typeshare-cli
+typeshare . --lang=typescript --output-file=types.ts
+```
+
 ## Update Rates
 
 ```bash
