@@ -1,0 +1,1 @@
+(specifications->manifest '("rust" "rust-cargo" "gcc-toolchain"))

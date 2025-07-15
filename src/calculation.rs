@@ -101,7 +101,7 @@ impl TaxScenario {
                         return Ok(rule.clone().unwrap().by_threshold(amount as u32, self.ignore_threshold).clone());
                     } else {
                         // Fallback to a safe option
-                        return Ok(TaxCalculationType::Destination);
+                        Ok(TaxCalculationType::Destination)
                     }
                 },
                 TransactionType::B2C => {
@@ -113,7 +113,7 @@ impl TaxScenario {
                         ).clone());
                     } else {
                         // Fallback to a safe option
-                        return Ok(TaxCalculationType::Destination);
+                        Ok(TaxCalculationType::Destination)
                     }
                 },
             }
@@ -143,7 +143,7 @@ impl TaxScenario {
                         }
                         return Ok(rule.clone().unwrap().by_threshold(amount as u32, self.ignore_threshold).clone());
                     } else {
-                        return Ok(TaxCalculationType::Destination);
+                        Ok(TaxCalculationType::Destination)
                     }
                 },
                 TransactionType::B2C => {
@@ -155,7 +155,7 @@ impl TaxScenario {
                         }
                         return Ok(rule.clone().unwrap().by_threshold(amount as u32, self.ignore_threshold).clone());
                     } else {
-                        return Ok(TaxCalculationType::Destination);
+                        Ok(TaxCalculationType::Destination)
                     }
                 },
             }
@@ -178,7 +178,7 @@ impl TaxScenario {
             let overwrite = self.trade_agreement_override.clone().unwrap();
             match overwrite {
                 TradeAgreementOverride::UseAgreement(agreement) => {
-                    let rule = db.get_rule(&agreement.as_str())?;
+                    let rule = db.get_rule(agreement.as_str())?;
                     return Ok(Some(rule));
                 },
                 TradeAgreementOverride::NoAgreement => {
@@ -221,7 +221,7 @@ impl TaxScenario {
     /// ```
     pub fn determine_calculation_type(&self, db: &TaxDatabase, amount: f64) -> Result<TaxCalculationType, ProcessingError> {
         // Check if there's a trade rule
-        let agreement = self.determine_rule(&db)?;
+        let agreement = self.determine_rule(db)?;
 
         if agreement.is_none() {
             // No agreement found, use default rules

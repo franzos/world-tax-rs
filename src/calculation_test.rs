@@ -34,7 +34,7 @@ mod tests {
         assert_eq!(rates.len(), 1);
         assert_eq!(rates[0].rate, 0.19);
         assert_eq!(rates[0].tax_type, TaxType::VAT(VatRate::Standard));
-        assert_eq!(rates[0].compound, false);
+        assert!(!rates[0].compound);
     }
 
     #[test]

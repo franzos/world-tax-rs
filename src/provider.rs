@@ -90,8 +90,12 @@ impl TaxDatabase {
     /// Returns the trade agreement if one exists at the federal level for the country.
     pub fn get_federal_rule(&self, country: &str) -> Option<TradeAgreement> {
         let rule = self.trade_agreements.get(country);
-        if rule.is_some() && rule.unwrap().is_federal() {
-            Some(rule.unwrap().clone())
+        if let Some(rule) = rule {
+            if rule.is_federal() {
+                Some(rule.clone())
+            } else {
+                None
+            }
         } else {
             None
         }
@@ -129,8 +133,8 @@ impl TaxDatabase {
     /// Returns `DatabaseError::CountryNotFound` if the country code is not found.
     pub fn get_country(&self, code: &str) -> Result<&Country, DatabaseError> {
         let country = self.countries.get(code);
-        if country.is_some() {
-            Ok(country.unwrap())
+        if let Some(country) = country {
+            Ok(country)
         } else {
             Err(DatabaseError::CountryNotFound(code.to_string()))
         }
@@ -147,8 +151,8 @@ impl TaxDatabase {
     /// Returns `DatabaseError::TradeAgreementNotFound` if the agreement is not found.
     pub fn get_rule(&self, rule_id: &str) -> Result<TradeAgreement, DatabaseError> {
         let rule = self.trade_agreements.get(rule_id);
-        if rule.is_some() {
-            Ok(rule.unwrap().clone())
+        if let Some(rule) = rule {
+            Ok(rule.clone())
         } else {
             Err(DatabaseError::TradeAgreementNotFound(rule_id.to_string()))
         }

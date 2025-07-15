@@ -171,6 +171,23 @@ RUST_LOG=debug cargo test -- --nocapture
 RUST_LOG=debug cargo test -- --test-threads=1 --nocapture
 ```
 
+## Development
+
+Compile and start server:
+
+```bash
+guix shell -m manifest.scm
+cargo build
+```
+
+Clippy:
+
+```bash
+docker run --rm -v $(pwd):/app -w /app rust:1.82 sh \
+-c "rustup component add clippy && cargo clippy \
+--all-targets --all-features -- -D warnings"
+```
+
 ## Credit
 
 The tax rates are updated from the following sources:
