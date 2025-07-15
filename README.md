@@ -188,6 +188,13 @@ docker run --rm -v $(pwd):/app -w /app rust:1.82 sh \
 --all-targets --all-features -- -D warnings"
 ```
 
+Format:
+
+```bash
+docker run --rm -v $(pwd):/app -w /app rust:1.82 sh \
+-c "rustup component add rustfmt && cargo fmt --all" 
+```
+
 ## Credit
 
 The tax rates are updated from the following sources:

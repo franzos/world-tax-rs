@@ -1,16 +1,16 @@
 //! Tax calculation types and structures.
-//! 
+//!
 //! This module contains the core types used for tax calculations across different
 //! tax systems including VAT, GST, HST, and other regional tax schemes. It provides
 //! the fundamental data structures and enums needed to represent tax scenarios,
 //! trade agreements, and calculation rules.
 
+use crate::errors::InputValidationError;
 use log::debug;
 use serde::{Deserialize, Deserializer, Serialize};
-use strum_macros::Display;
 use std::collections::HashMap;
+use strum_macros::Display;
 use typeshare::typeshare;
-use crate::errors::InputValidationError;
 
 /// Represents different types of tax systems used globally.
 #[typeshare]
@@ -60,12 +60,12 @@ pub enum TaxCalculationType {
     /// Tax status unknown
     None,
     /// Calculation depends on threshold
-    ThresholdBased
+    ThresholdBased,
 }
 
 /// Represents different types of taxes that can be applied.
 #[typeshare]
-#[derive(Debug, Clone, Serialize, Deserialize ,PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(tag = "type", content = "content")]
 #[serde(rename_all = "snake_case")]
 pub enum TaxType {
@@ -89,11 +89,11 @@ pub enum TaxType {
 #[serde(rename_all = "snake_case")]
 pub enum VatRate {
     /// Standard VAT rate
-    Standard,    
+    Standard,
     /// Reduced VAT rate
-    Reduced,     
+    Reduced,
     /// Alternative reduced VAT rate
-    ReducedAlt,  
+    ReducedAlt,
     /// Super-reduced VAT rate
     SuperReduced,
     /// Zero-rated goods/services
@@ -101,7 +101,7 @@ pub enum VatRate {
     /// VAT exempt
     Exempt,
     /// Reverse charge applies
-    ReverseCharge   
+    ReverseCharge,
 }
 
 /// Defines the type of trade agreement between regions.
@@ -112,7 +112,7 @@ pub enum TradeAgreementType {
     /// Agreement between multiple countries in a customs union (e.g., EU)
     CustomsUnion,
     /// Agreement between states within a federal system
-    FederalState
+    FederalState,
 }
 
 /// Override options for trade agreement application.
@@ -192,12 +192,14 @@ pub struct TaxRuleConfig {
 
 impl TaxRuleConfig {
     /// Determines the tax calculation type based on the amount and threshold
-    /// 
+    ///
     /// # Arguments
     /// * `amount` - The transaction amount
     /// * `ignore_threshold` - Whether to ignore threshold-based calculations
     pub fn by_threshold(&self, amount: u32, ignore_threshold: bool) -> &TaxCalculationType {
-        let has_threshold = self.below_threshold.is_some() && self.above_threshold.is_some() && self.threshold.is_some();
+        let has_threshold = self.below_threshold.is_some()
+            && self.above_threshold.is_some()
+            && self.threshold.is_some();
         if has_threshold {
             let rule_threshold: u32 = self.threshold.unwrap();
             if amount < rule_threshold && !ignore_threshold {
@@ -210,9 +212,13 @@ impl TaxRuleConfig {
     }
 
     /// Determines the tax calculation type for digital products based on amount and threshold
-    pub fn by_digital_product_threshold(&self, amount: u32, ignore_threshold: bool) -> &TaxCalculationType {
-        let has_threshold = self.below_threshold_digital_products.is_some() 
-            && self.above_threshold_digital_products.is_some() 
+    pub fn by_digital_product_threshold(
+        &self,
+        amount: u32,
+        ignore_threshold: bool,
+    ) -> &TaxCalculationType {
+        let has_threshold = self.below_threshold_digital_products.is_some()
+            && self.above_threshold_digital_products.is_some()
             && self.threshold_digital_products.is_some();
         if has_threshold {
             let rule_threshold: u32 = self.threshold_digital_products.unwrap();
@@ -230,7 +236,7 @@ impl TaxRuleConfig {
         &self,
         amount: u32,
         is_digital_product_or_service: bool,
-        ignore_threshold: bool
+        ignore_threshold: bool,
     ) -> &TaxCalculationType {
         if is_digital_product_or_service {
             return self.by_digital_product_threshold(amount, ignore_threshold);
@@ -332,14 +338,14 @@ pub struct Country {
 }
 
 /// Represents a geographical region for tax purposes
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// # use world_tax::types::Region;
 /// // Create a region for France (no sub-region)
 /// let france = Region::new("FR".to_string(), None).unwrap();
-/// 
+///
 /// // Create a region for California, USA
 /// let california = Region::new("US".to_string(), Some("US-CA".to_string())).unwrap();
 /// ```
@@ -363,13 +369,14 @@ impl Region {
     fn validate(country: &str, region: &Option<String>) -> Result<(), InputValidationError> {
         let country_info = rust_iso3166::from_alpha2(country)
             .ok_or_else(|| InputValidationError::InvalidCountryCode(country.to_string()))?;
-            
+
         debug!("Found country: {}", country_info.name);
 
         if let Some(region_code) = region {
-            let _ = country_info.subdivisions()
+            let _ = country_info
+                .subdivisions()
                 .ok_or_else(|| InputValidationError::UnexpectedRegionCode(region_code.clone()))?;
-                
+
             let region_info = rust_iso3166::iso3166_2::from_code(region_code)
                 .ok_or_else(|| InputValidationError::InvalidRegionCode(region_code.clone()))?;
 

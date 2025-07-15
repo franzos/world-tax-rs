@@ -1,11 +1,11 @@
 //! Error types and handling.
-//! 
+//!
 //! This module defines the various error types used throughout the tax calculation
 //! system. These errors are used to represent different failure scenarios that can
 //! occur during input validation, database operations, and processing of tax calculations.
-//! 
+//!
 //! The errors are categorized into three main types:
-//! 
+//!
 //! - `InputValidationError`: Errors related to invalid input data, such as incorrect
 //!   country or region codes.
 //! - `DatabaseError`: Errors that occur during database operations, such as missing
