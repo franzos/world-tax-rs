@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
+## [0.5.2] - 2026-07-02
+
+### Added
+
+- CI workflow to check tax rates every two weeks and open a PR on change
+
+### Changed
+
+- Update dependencies (rust_iso3166 0.2, strum 0.28)
+- Apply clippy suggestions
+
+### Fixed
+
+- Update tax rates (EE, FI, RO, SK, CZ, LT, IL, Nova Scotia, Kansas)
+
 ## [0.5.1]
 
 ### Changed

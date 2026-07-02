@@ -1,0 +1,73 @@
+name: Check tax rates
+
+on:
+  schedule:
+    - cron: '0 6 1,15 * *'  # 1st and 15th of each month (~ every 2 weeks)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-rates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Regenerate rates from upstream sources
+        run: |
+          cp vat_rates.json vat_rates.old.json
+          python3 get_vat_rates.py
+
+      - name: Summarise changes
+        id: summary
+        run: |
+          python3 - <<'PY'
+          import json
+          old = json.load(open("vat_rates.old.json"))
+          new = json.load(open("vat_rates.json"))
+          keys = ["standard_rate", "reduced_rate", "reduced_rate_alt", "super_reduced_rate", "parking_rate"]
+          def flat(d):
+              out = {}
+              for cc, v in d.items():
+                  for k in keys:
+                      if k in v: out[(cc, k)] = v[k]
+                  for sc, sv in v.get("states", {}).items():
+                      for k in keys:
+                          if k in sv: out[(f"{cc}/{sc}", k)] = sv[k]
+              return out
+          fo, fn = flat(old), flat(new)
+          changed = [(f"{cc} `{k}`", fo[(cc, k)], fn[(cc, k)]) for (cc, k) in fn if (cc, k) in fo and fn[(cc, k)] != fo[(cc, k)]]
+          added = sorted(set(new) - set(old))
+          removed = sorted(set(old) - set(new))
+          lines = ["Automated check detected upstream tax rate changes.", "",
+                   "Sources:",
+                   "- node-sales-tax (`sales_tax_rates.json`)",
+                   "- eu-vat-rates (`rates.json`)", ""]
+          if changed:
+              lines += ["| Region | Was | Now |", "|---|---|---|"]
+              lines += [f"| {r} | {o} | {n} |" for r, o, n in sorted(changed)]
+              lines.append("")
+          if added:
+              lines.append(f"Countries added upstream: {', '.join(added)}")
+          if removed:
+              lines.append(f"Countries removed upstream: {', '.join(removed)}")
+          lines += ["", "Review the diff, then update any hardcoded rate assertions in `src/calculation_test.rs` before merging."]
+          open("pr-body.md", "w").write("\n".join(lines))
+          PY
+          rm vat_rates.old.json
+
+      - name: Open pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore: update tax rates"
+          branch: automated/tax-rate-update
+          delete-branch: true
+          title: "Tax rates have changed; update required"
+          body-path: pr-body.md
+          add-paths: vat_rates.json
