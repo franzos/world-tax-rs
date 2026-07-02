@@ -389,7 +389,7 @@ mod tests {
             .expect("Rates should be found");
         assert_eq!(rates.len(), 1); // Should only have HST
         assert_eq!(rates[0].tax_type, TaxType::HST);
-        assert_eq!(rates[0].rate, 0.10); // Nova Scotia HST rate 10%
+        assert_eq!(rates[0].rate, 0.09); // Nova Scotia HST provincial rate 9% (14% combined since Apr 2025)
         assert!(!rates[0].compound); // HST should not compound
     }
 

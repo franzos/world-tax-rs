@@ -144,7 +144,7 @@
         "type": "hst"
       },
       "CA-NS": {
-        "standard_rate": 0.1,
+        "standard_rate": 0.09,
         "type": "hst"
       },
       "CA-ON": {
@@ -210,8 +210,8 @@
     "type": "vat",
     "currency": "EUR",
     "standard_rate": 0.21,
-    "reduced_rate": 0.15,
-    "reduced_rate_alt": 0.1,
+    "reduced_rate": 0.12,
+    "reduced_rate_alt": 0.0,
     "super_reduced_rate": 0.0,
     "parking_rate": 0.0,
     "vat_name": "Dani z pridane hotnoty",
@@ -257,9 +257,9 @@
   "EE": {
     "type": "vat",
     "currency": "EUR",
-    "standard_rate": 0.2,
-    "reduced_rate": 0.09,
-    "reduced_rate_alt": 0.0,
+    "standard_rate": 0.24,
+    "reduced_rate": 0.13,
+    "reduced_rate_alt": 0.09,
     "super_reduced_rate": 0.0,
     "parking_rate": 0.0,
     "vat_name": "K\u00e4ibemaks",
@@ -289,7 +289,7 @@
   "FI": {
     "type": "vat",
     "currency": "EUR",
-    "standard_rate": 0.24,
+    "standard_rate": 0.255,
     "reduced_rate": 0.14,
     "reduced_rate_alt": 0.1,
     "super_reduced_rate": 0.0,
@@ -385,7 +385,7 @@
   "IL": {
     "type": "vat",
     "currency": "ILS",
-    "standard_rate": 0.17
+    "standard_rate": 0.18
   },
   "IM": {
     "type": "vat",
@@ -472,7 +472,7 @@
     "type": "vat",
     "currency": "EUR",
     "standard_rate": 0.21,
-    "reduced_rate": 0.09,
+    "reduced_rate": 0.12,
     "reduced_rate_alt": 0.05,
     "super_reduced_rate": 0.0,
     "parking_rate": 0.0,
@@ -673,9 +673,9 @@
   "RO": {
     "type": "vat",
     "currency": "EUR",
-    "standard_rate": 0.19,
-    "reduced_rate": 0.09,
-    "reduced_rate_alt": 0.05,
+    "standard_rate": 0.21,
+    "reduced_rate": 0.11,
+    "reduced_rate_alt": 0.0,
     "super_reduced_rate": 0.0,
     "parking_rate": 0.0,
     "vat_name": "Taxa pe valoarea ad\u00e3ugata",
@@ -736,9 +736,9 @@
   "SK": {
     "type": "vat",
     "currency": "EUR",
-    "standard_rate": 0.2,
-    "reduced_rate": 0.1,
-    "reduced_rate_alt": 0.0,
+    "standard_rate": 0.23,
+    "reduced_rate": 0.19,
+    "reduced_rate_alt": 0.05,
     "super_reduced_rate": 0.0,
     "parking_rate": 0.0,
     "vat_name": "Dan z pridanej hodnoty",
@@ -856,7 +856,7 @@
         "type": "vat"
       },
       "US-KS": {
-        "standard_rate": 0.063,
+        "standard_rate": 0.065,
         "type": "vat"
       },
       "US-KY": {
