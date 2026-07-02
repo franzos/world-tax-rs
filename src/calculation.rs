@@ -92,11 +92,11 @@ impl TaxScenario {
                     let rule = &agreement.tax_rules.internal_b2b;
                     if rule.is_some() {
                         // In the EU, likely to be reverse charge
-                        return Ok(rule
+                        Ok(rule
                             .clone()
                             .unwrap()
                             .by_threshold(amount as u32, self.ignore_threshold)
-                            .clone());
+                            .clone())
                     } else {
                         // Fallback to a safe option
                         Ok(TaxCalculationType::Destination)
@@ -106,7 +106,7 @@ impl TaxScenario {
                     let rule = &agreement.tax_rules.internal_b2c;
                     if rule.is_some() {
                         // In the EU, by threshold, likely to be origin or destination based
-                        return Ok(rule
+                        Ok(rule
                             .clone()
                             .unwrap()
                             .by_threshold_or_digital_product_threshold(
@@ -114,7 +114,7 @@ impl TaxScenario {
                                 self.is_digital_product_or_service,
                                 self.ignore_threshold,
                             )
-                            .clone());
+                            .clone())
                     } else {
                         // Fallback to a safe option
                         Ok(TaxCalculationType::Destination)
@@ -145,11 +145,11 @@ impl TaxScenario {
                         if u_rule.is_reseller(self.has_resale_certificate) {
                             return Ok(TaxCalculationType::ZeroRated);
                         }
-                        return Ok(rule
+                        Ok(rule
                             .clone()
                             .unwrap()
                             .by_threshold(amount as u32, self.ignore_threshold)
-                            .clone());
+                            .clone())
                     } else {
                         Ok(TaxCalculationType::Destination)
                     }
@@ -163,18 +163,18 @@ impl TaxScenario {
                         {
                             return Ok(TaxCalculationType::ZeroRated);
                         }
-                        return Ok(rule
+                        Ok(rule
                             .clone()
                             .unwrap()
                             .by_threshold(amount as u32, self.ignore_threshold)
-                            .clone());
+                            .clone())
                     } else {
                         Ok(TaxCalculationType::Destination)
                     }
                 }
             }
         } else {
-            return Ok(TaxCalculationType::Destination);
+            Ok(TaxCalculationType::Destination)
         }
     }
 

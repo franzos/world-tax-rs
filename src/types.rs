@@ -246,8 +246,8 @@ impl TaxRuleConfig {
 
     /// Determines if the transaction qualifies for reseller treatment
     pub fn is_reseller(&self, has_resale_certificate: bool) -> bool {
-        if self.requires_resale_certificate.is_some() {
-            return self.requires_resale_certificate.unwrap() && has_resale_certificate;
+        if let Some(requires) = self.requires_resale_certificate {
+            return requires && has_resale_certificate;
         }
         false
     }
